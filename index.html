@@ -1,0 +1,139 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<style>
+body{
+	background-color:#000;
+	color:#fff;
+	font-family:monospace;
+}
+.content{
+	width:100%;
+	height:100%;
+	position:relative;
+}
+#text{
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+	-webkit-transform: translate(-50%,-50%);
+	font-size:40px;
+}
+</style>
+</head>
+<body>
+<div class="content">
+<div id="text">
+
+</div>
+</div>
+<script>
+	(function(){
+		var container = document.getElementById("text");
+		var setText = function(text){
+			container.innerHTML = text;
+		};
+		var alphabet = "abcdefghijklmnopqrstuvwxyz"
+		var letterSwitcher = function(sendLetter){
+			var self, goNuts, currentLetter = " ";
+			var setToLetter = function(l){
+				currentLetter = l;
+				sendLetter(currentLetter);
+			};
+			var moveToLetter = function(l){
+				goNuts(function(){
+					currentLetter = l;
+					sendLetter(currentLetter);
+				})
+			};
+			var goToRandomLetter = function(times, onDone){
+				if(times > 0){
+					currentLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
+					sendLetter(currentLetter);
+					setTimeout(function(){
+						goToRandomLetter(times - 1, onDone);
+					}, 20 + Math.floor(Math.random() * 30));
+				}else{
+					onDone();
+				}
+			};
+			goNuts = function(onDone){
+				goToRandomLetter(10 + Math.floor(Math.random() * 20), onDone);
+			};
+			var die = function(remove){
+				goNuts(function(){
+					remove(self);
+				});
+			};
+			self = {
+				setToLetter:setToLetter,
+				moveToLetter:moveToLetter,
+				die:die,
+				getCurrentLetter:function(){return currentLetter;}
+			};
+			return self;
+		};
+		var display = (function(setText){
+			var displayWord, letterSwitchers = [];
+			var removeSwitcher = function(s){
+				letterSwitchers.splice(letterSwitchers.indexOf(s), 1);
+				displayWord();
+			};
+			var makeLetterSwitcher = function(){
+				return letterSwitcher(function(){
+					displayWord();
+				});
+			};
+			var ensureNumberOfSwitchers = function(l){
+				var i, letterSwitchersToKill = [];
+				for(i=l;i<letterSwitchers.length;i++){
+					letterSwitchersToKill.push(letterSwitchers[i]);
+				}
+				for(i=letterSwitchers.length;i<l;i++){
+					letterSwitchers.push(makeLetterSwitcher());
+				}
+				letterSwitchersToKill.map(function(s){s.die(removeSwitcher);});
+			};
+			var setToWord = function(word){
+				ensureNumberOfSwitchers(word.length);
+				for(var i=0;i<word.length;i++){
+					letterSwitchers[i].setToLetter(word[i]);
+				}
+			};
+			var moveToWord = function(word){
+				ensureNumberOfSwitchers(word.length);
+				for(var i=0;i<word.length;i++){
+					letterSwitchers[i].moveToLetter(word[i]);
+				}
+			};
+			displayWord = function(){
+				var text = letterSwitchers.map(function(s){return s.getCurrentLetter();}).join("");
+				setText(text);
+			};
+			return {
+				setToWord:setToWord,
+				moveToWord:moveToWord
+			};
+		})(setText);
+
+		var sentence = "Is dit ongeveer wat je in gedachten had?";
+		var words = sentence.split(/\s+/g);
+		var currentWordIndex = 0;
+		display.setToWord(words[currentWordIndex]);
+		var moveToNextWord = function(){
+			setTimeout(function(){
+				currentWordIndex++;
+				if(currentWordIndex < words.length){
+					display.moveToWord(words[currentWordIndex]);
+					moveToNextWord();
+				}else{
+					display.moveToWord("");
+				}
+			},2000);
+		};
+		moveToNextWord();
+	})();
+</script>
+</body>
+</html>
