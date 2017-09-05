@@ -62,6 +62,7 @@ body{
 			   return result;
 			}
 			result.words = sequence.split("/");
+			result.repeat = params.repeat;
 			return result;
 		};
 		var container = document.getElementById("text");
@@ -159,6 +160,10 @@ body{
 				setTimeout(function(){
 					currentWordIndex++;
 					if(currentWordIndex < words.length){
+						display.moveToWord(words[currentWordIndex]);
+						moveToNextWord();
+					}else if(specs.repeat){
+						currentWordIndex = 0;
 						display.moveToWord(words[currentWordIndex]);
 						moveToNextWord();
 					}else{
