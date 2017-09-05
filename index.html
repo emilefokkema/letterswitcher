@@ -30,6 +30,40 @@ body{
 </div>
 <script>
 	(function(){
+		var getHashParams = function(){
+			var result = {};
+			var hash = window.location.hash;
+			if(!hash){
+			   return result;
+			}
+			var match = hash.match(/[^=#&]+(?:=[^&]+)?/g);
+			if(!match){
+				return result;
+			}
+			match.map(function(pair){
+				var pairMatch = pair.match(/^([^=]+)(?:=(.*))?$/);
+				var key = pairMatch[1];
+				var value = pairMatch[2];
+				if(value){
+				   value = decodeURIComponent(value);
+				}
+				value = value || true;
+				result[key] = value;
+			});
+			return result;
+		};
+		var getSpecs = function(){
+			var result = {
+				words:["Doei"]
+			};
+			var params = getHashParams();
+			var sequence = params.sequence;
+			if(!sequence){
+			   return result;
+			}
+			result.words = sequence.split("/");
+			return result;
+		};
 		var container = document.getElementById("text");
 		var setText = function(text){
 			container.innerHTML = text;
@@ -117,22 +151,29 @@ body{
 			};
 		})(setText);
 
-		var sentence = "Is dit ongeveer wat je in gedachten had?";
-		var words = sentence.split(/\s+/g);
-		var currentWordIndex = 0;
-		display.setToWord(words[currentWordIndex]);
-		var moveToNextWord = function(){
-			setTimeout(function(){
-				currentWordIndex++;
-				if(currentWordIndex < words.length){
-					display.moveToWord(words[currentWordIndex]);
-					moveToNextWord();
-				}else{
-					display.moveToWord("");
-				}
-			},2000);
+		var displaySequence = function(specs){
+			var words = specs.words;
+			var currentWordIndex = 0;
+			display.setToWord(words[0]);
+			var moveToNextWord = function(){
+				setTimeout(function(){
+					currentWordIndex++;
+					if(currentWordIndex < words.length){
+						display.moveToWord(words[currentWordIndex]);
+						moveToNextWord();
+					}else{
+						display.moveToWord("");
+					}
+				},2000);
+			};
+			moveToNextWord();
 		};
-		moveToNextWord();
+		
+		displaySequence(getSpecs());
+		
+		
+		
+		
 	})();
 </script>
 </body>
