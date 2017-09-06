@@ -17,6 +17,21 @@ body{
 	font-size:40px;
 }
 #text .letter-switcher{
-	display: inline;
+	display: inline-block;
 	position: relative;
 }
+.letter-switcher .letter{
+	position: absolute;
+	top:0px;
+}
+.letter-switcher .space{
+	position: relative;
+	white-space: pre;
+}
+.letter-switcher .letter-dying{
+	transition-property: top color;
+	transition-duration: 300ms;
+	top:200px;
+	color:#000;
+}
+

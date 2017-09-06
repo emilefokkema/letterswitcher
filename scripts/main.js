@@ -47,14 +47,24 @@
 		
 		var alphabet = "abcdefghijklmnopqrstuvwxyz"
 		var letterSwitcher = function(){
-			return requireElement(document.getElementById("letterSwitcher").innerHTML, function(switcherElement){
+			return requireElement(document.getElementById("letterSwitcher").innerHTML, function(switcherElement, letterElement, spaceElement){
 				var self,
 					dying,
 					goNuts,
-					currentLetter = " ";
+					currentLetter;
 				var setToLetter = function(l){
-					currentLetter = l;
-					switcherElement.innerHTML = l;
+					if(!currentLetter){
+						spaceElement();
+					}else{
+						var oldLetter = currentLetter;
+						oldLetter.setAttribute("class","letter letter-dying");
+						setTimeout(function(){
+							switcherElement.removeChild(oldLetter);
+						},500);
+					}
+					currentLetter = letterElement(function(el){
+						el.innerHTML = l;
+					});
 				};
 				var moveToLetter = function(l, onDone){
 					setTimeout(function(){
