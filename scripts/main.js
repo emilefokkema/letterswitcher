@@ -47,63 +47,60 @@
 		
 		var alphabet = "abcdefghijklmnopqrstuvwxyz"
 		var letterSwitcher = function(){
-			var self,
-				dying,
-				goNuts,
-				currentLetter = " ",
-				div = (function(){
-					var el = document.createElement("div");
-					el.setAttribute("class","letter-switcher");
-					return el;
-				})();
-			var setToLetter = function(l){
-				currentLetter = l;
-				div.innerHTML = l;
-			};
-			var moveToLetter = function(l, onDone){
-				setTimeout(function(){
-					goNuts(function(){
-						setToLetter(l);
-						onDone();
-					});
-				}, 80 + Math.floor(Math.random() * 200));
-				
-			};
-			var goToRandomLetter = function(times, onDone){
-				if(times > 0){
+			return requireElement(document.getElementById("letterSwitcher").innerHTML, function(switcherElement){
+				var self,
+					dying,
+					goNuts,
+					currentLetter = " ";
+				var setToLetter = function(l){
+					currentLetter = l;
+					switcherElement.innerHTML = l;
+				};
+				var moveToLetter = function(l, onDone){
 					setTimeout(function(){
-						setToLetter(alphabet[Math.floor(Math.random() * alphabet.length)]);
-						goToRandomLetter(times - 1, onDone);
-					}, 10 + Math.floor(Math.random() * 30));
-				}else{
-					onDone();
-				}
-			};
-			goNuts = function(onDone){
-				goToRandomLetter(20 + Math.floor(Math.random() * 20), onDone);
-			};
-			var die = function(onRemove){
-				if(dying){return;}
-				dying = true;
-				goNuts(function(){
-					if(dying){
-						container.removeChild(div);
-						onRemove(self);
+						goNuts(function(){
+							setToLetter(l);
+							onDone();
+						});
+					}, 80 + Math.floor(Math.random() * 200));
+
+				};
+				var goToRandomLetter = function(times, onDone){
+					if(times > 0){
+						setTimeout(function(){
+							setToLetter(alphabet[Math.floor(Math.random() * alphabet.length)]);
+							goToRandomLetter(times - 1, onDone);
+						}, 10 + Math.floor(Math.random() * 30));
+					}else{
+						onDone();
 					}
-				});
-			};
-			var preserve = function(){
-				if(dying){console.log("preserving one that was dying");}
-				dying = false;
-			};
-			container.appendChild(div);
-			self = {
-				setToLetter:setToLetter,
-				moveToLetter:moveToLetter,
-				die:die,
-				preserve:preserve
-			};
-			return self;
+				};
+				goNuts = function(onDone){
+					goToRandomLetter(20 + Math.floor(Math.random() * 20), onDone);
+				};
+				var die = function(onRemove){
+					if(dying){return;}
+					dying = true;
+					goNuts(function(){
+						if(dying){
+							container.removeChild(switcherElement);
+							onRemove(self);
+						}
+					});
+				};
+				var preserve = function(){
+					if(dying){console.log("preserving one that was dying");}
+					dying = false;
+				};
+				container.appendChild(switcherElement);
+				self = {
+					setToLetter:setToLetter,
+					moveToLetter:moveToLetter,
+					die:die,
+					preserve:preserve
+				};
+				return self;
+			});
 		};
 		var display = (function(){
 			var letterSwitchers = [];
