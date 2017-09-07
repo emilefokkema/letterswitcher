@@ -63,10 +63,9 @@
 					var currentClass = letter.getAttribute("class");
 					if(currentClass !== "letter letter-dying"){
 					   	letter.setAttribute("class","letter letter-dying");
-						setTimeout(function(){
+						letter.addEventListener("animationend",function(){
 							switcherElement.removeChild(letter);
-						
-							},150);
+						});
 					 }
 					
 				};
@@ -76,21 +75,21 @@
 					currentLetter = letterElement(function(el){
 						el.innerHTML = l;
 						el.setAttribute("class","letter letter-success");
+						el.addEventListener("animationend",function(){
+							onDone();
+						});
 					});
-					setTimeout(function(){
-						onDone();
-					}, 150);
 				};
 				var failLetter = function(l){
 					fill();
 					
-					var letter = letterElement(function(el){
+					letterElement(function(el){
 						el.innerHTML = l;
 						el.setAttribute("class","letter letter-failure");
+						el.addEventListener("animationend",function(){
+							switcherElement.removeChild(el);
+						});
 					});
-					setTimeout(function(){
-						switcherElement.removeChild(letter);
-					}, 300);
 				};
 				var moveToLetter = function(l, onDone){
 					setTimeout(function(){
@@ -117,6 +116,7 @@
 				var die = function(onRemove){
 					if(dying){return;}
 					dying = true;
+					currentLetter && killLetter(currentLetter);
 					goNuts(function(){
 						if(dying){
 							container.removeChild(switcherElement);
