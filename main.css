@@ -1,3 +1,16 @@
+@keyframes fail{
+	0% {top:-200px;color:#000;}
+	50% {top:0px;color:#fff;}
+	100% {top:200px;color:#000;}
+}
+@keyframes success{
+	0% {top:-200px;color:#000;}
+	100% {top:0px;color:#fff;}
+}
+@keyframes dying{
+	0% {top:0px;color:#fff;}
+	100% {top:200px;color:#000;}
+}
 body{
 	background-color:#000;
 	color:#fff;
@@ -28,10 +41,16 @@ body{
 	position: relative;
 	white-space: pre;
 }
+.letter-switcher .letter-failure{
+	animation-name:fail;
+	animation-duration:300ms;
+}
+.letter-switcher .letter-success{
+	animation-name:success;
+	animation-duration:150ms;
+}
 .letter-switcher .letter-dying{
-	transition-property: top color;
-	transition-duration: 300ms;
-	top:200px;
-	color:#000;
+	animation-name:dying;
+	animation-duration:150ms;
 }
 

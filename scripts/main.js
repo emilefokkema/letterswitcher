@@ -51,26 +51,52 @@
 				var self,
 					dying,
 					goNuts,
-					currentLetter;
-				var setToLetter = function(l){
-					if(!currentLetter){
+					currentLetter,
+					empty = true;
+				var fill = function(){
+					if(empty){
 						spaceElement();
-					}else{
-						var oldLetter = currentLetter;
-						oldLetter.setAttribute("class","letter letter-dying");
-						setTimeout(function(){
-							switcherElement.removeChild(oldLetter);
-						},500);
+						empty = false;
 					}
+				};
+				var killLetter = function(letter){
+					var currentClass = letter.getAttribute("class");
+					if(currentClass !== "letter letter-dying"){
+					   	letter.setAttribute("class","letter letter-dying");
+						setTimeout(function(){
+							switcherElement.removeChild(letter);
+						
+							},150);
+					 }
+					
+				};
+				var successLetter = function(l, onDone){
+					fill();
+					currentLetter && killLetter(currentLetter);
 					currentLetter = letterElement(function(el){
 						el.innerHTML = l;
+						el.setAttribute("class","letter letter-success");
 					});
+					setTimeout(function(){
+						onDone();
+					}, 150);
+				};
+				var failLetter = function(l){
+					fill();
+					
+					var letter = letterElement(function(el){
+						el.innerHTML = l;
+						el.setAttribute("class","letter letter-failure");
+					});
+					setTimeout(function(){
+						switcherElement.removeChild(letter);
+					}, 300);
 				};
 				var moveToLetter = function(l, onDone){
 					setTimeout(function(){
+						currentLetter && killLetter(currentLetter);
 						goNuts(function(){
-							setToLetter(l);
-							onDone();
+							successLetter(l, onDone);
 						});
 					}, 80 + Math.floor(Math.random() * 200));
 
@@ -78,7 +104,7 @@
 				var goToRandomLetter = function(times, onDone){
 					if(times > 0){
 						setTimeout(function(){
-							setToLetter(alphabet[Math.floor(Math.random() * alphabet.length)]);
+							failLetter(alphabet[Math.floor(Math.random() * alphabet.length)]);
 							goToRandomLetter(times - 1, onDone);
 						}, 10 + Math.floor(Math.random() * 30));
 					}else{
@@ -104,7 +130,9 @@
 				};
 				container.appendChild(switcherElement);
 				self = {
-					setToLetter:setToLetter,
+					setToLetter:function(l){
+						successLetter(l, function(){});
+					},
 					moveToLetter:moveToLetter,
 					die:die,
 					preserve:preserve
