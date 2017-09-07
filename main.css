@@ -43,14 +43,14 @@ body{
 }
 .letter-switcher .letter-failure{
 	animation-name:fail;
-	animation-duration:200ms;
+	animation-duration:500ms;
 }
 .letter-switcher .letter-success{
 	animation-name:success;
-	animation-duration:100ms;
+	animation-duration:250ms;
 }
 .letter-switcher .letter-dying{
 	animation-name:dying;
-	animation-duration:100ms;
+	animation-duration:250ms;
 }
 

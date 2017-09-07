@@ -97,7 +97,7 @@
 						goNuts(function(){
 							successLetter(l, onDone);
 						});
-					}, 80 + Math.floor(Math.random() * 200));
+					}, 20 + Math.floor(Math.random() * 20));
 
 				};
 				var goToRandomLetter = function(times, onDone){
@@ -105,13 +105,13 @@
 						setTimeout(function(){
 							failLetter(alphabet[Math.floor(Math.random() * alphabet.length)]);
 							goToRandomLetter(times - 1, onDone);
-						}, 10 + Math.floor(Math.random() * 30));
+						}, 40 + Math.floor(Math.random() * 30));
 					}else{
 						onDone();
 					}
 				};
 				goNuts = function(onDone){
-					goToRandomLetter(20 + Math.floor(Math.random() * 20), onDone);
+					goToRandomLetter(10 + Math.floor(Math.random() * 20), onDone);
 				};
 				var die = function(onRemove){
 					if(dying){return;}
